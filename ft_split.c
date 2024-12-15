@@ -10,31 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include "libft.h"
+#include "libft.h"
 #include <stdlib.h>
-#include <stdio.h>
-
-void	*ft_calloc(size_t nmemb, size_t size)
-{
-	char	*res;
-	size_t		i;
-
-	i = 0;
-	if (nmemb && size && nmemb * size > 2147483647)
-		return (NULL);
-	res = (void *)malloc(nmemb * size);
-	if (res == NULL)
-		return (NULL);
-	while (i < nmemb * size)
-		res[i++] = 0;
-	return (res);
-}
 
 int	ft_str_num(char const *s, char c)
 {
 	int	count;	
 	int	x;
-	
+
 	count = 0;
 	x = 0;
 	while (*s)
@@ -64,7 +47,28 @@ void	ft_free(char **arr, int count)
 	free(arr);
 }
 
-char    **ft_split(char const *s, char c)
+void	ft_substr(char **res, const char *s, int i, int *j, int word_beg)
+{
+	int	k;
+
+	res[*j] = ft_calloc(i - word_beg + 2, sizeof(char));
+	if (res[*j] == NULL)
+		ft_free(res, *j);
+	else
+	{
+		k = 0;
+		while (word_beg <= i)
+		{
+			res[*j][k] = s[word_beg];
+			k++;
+			word_beg++;
+		}
+		res[*j][k] = '\0';
+		*j += 1;
+	}
+}
+
+char	**ft_split(char const *s, char c)
 {
 	int		num_substr;
 	int		i;
@@ -85,19 +89,7 @@ char    **ft_split(char const *s, char c)
 			word_beg = i;
 		else if (s[i] != c && ((s[i + 1] == c) || (s[i + 1] == '\0')))
 		{
-			res[j] = ft_calloc(i - word_beg + 1, sizeof(char));
-			if (res[j] == NULL)
-				ft_free(res, j);
-			else
-			{
-				while (word_beg <= i)
-				{
-					*res[j] = s[word_beg];
-					res[j]++;
-					word_beg++;
-				}
-				*res[j] = '\0';
-			}
+			ft_substr(res, s, i, &j, word_beg);
 			word_beg = -1;
 		}
 		i++;
@@ -106,19 +98,23 @@ char    **ft_split(char const *s, char c)
 	return (res);
 }
 
+/*#include <stdio.h>
+
 int	main(void)
 {
 	char	**res;
 	char	*s;
+	char	c;
 	int		i;
 
 	i = 0;
-	s = "hello5what5areyou55doing";
-	res = ft_split(s, '5');
+	s = "hello5what5are5you55doing";
+	c = '5';
+	res = ft_split(s, c);
 	printf("%p\n", res);
 	while (*res != NULL)
 	{
 		printf("%s\n", *res);
 		res++;
 	}
-}
+}*/
